@@ -1,15 +1,35 @@
 from dataclasses import dataclass, field
-from enum import Enum
 import random
-from artifact_info import *
 
 
 @dataclass
 class Set:
     name: str
-    rarity: list[int]
-    bonus: dict[int, str]
-    domains: list[str]
+    artifact_names: list[str]
+    artifact_images: list[str]
+    bonuses: dict[str, str]
+    rarities: list[int]
+    obtain_locations: dict[int, list[str]]
+
+    def print_info(self):
+        print(f'{self.name}:')
+        for piece in self.bonuses:
+            print(f'⊘ {piece}: {self.bonuses[piece]}')
+
+
+@dataclass
+class Domain:
+    name: str
+    sets: list[Set] = field(default_factory=list)
+
+    def get_suitable_sets(self, rarity: int) -> list[Set]:
+        suitable_sets = []
+        for artifact_set in self.sets:
+            if str(rarity) in artifact_set.rarities:
+                suitable_sets.append(artifact_set)
+        if not suitable_sets:
+            raise ValueError('Chosen Domain doesn\'t have sets of this rarity.')
+        return suitable_sets
 
 
 @dataclass
@@ -34,7 +54,7 @@ class MainStat:
     def print(self):
         if '%' in self.name:
             print(self.name[:-4])
-            print(self.value)
+            print(f'{round(self.value, 1)}%')
         else:
             print(self.name)
             print(round(self.value))
@@ -43,7 +63,7 @@ class MainStat:
 @dataclass
 class SubStat:
     name: str
-    max: float
+    possible_values: list[float]
     probability: float = None
     proc_history: list[float] = field(default_factory=list)
 
@@ -52,24 +72,20 @@ class SubStat:
 
     @property
     def value(self) -> float:
-        return round(sum(self.proc_history), 1)
-
-    @property
-    def possible_values(self) -> list[float]:
-        return [self.max - self.max * i / 10 for i in range(4)]
+        return sum(self.proc_history)
 
     def upgrade(self):
         self.proc_history.append(random.choice(self.possible_values))
 
     def print(self):
         if '%' in self.name:
-            print(f'{self.name[:-4]}+{self.value}%')
+            print(f'{self.name[:-4]}+{round(self.value, 1)}%')
         else:
             print(f'{self.name}+{round(self.value)}')
 
 
 @dataclass
-class ArtifactTypeInfo:
+class ArtifactType:
     name: str
     main_stats: list[MainStat]
     sub_stats: list[SubStat]
@@ -105,14 +121,6 @@ class ArtifactTypeInfo:
         return random.choices(self.main_stats, weights=self.main_probabilities, k=1)[0]
 
 
-class ArtifactType(Enum):
-    FLOWER = ArtifactTypeInfo('Flower of Life', [MainStat(*s) for s in flower_main], [SubStat(*s) for s in sub])
-    PLUME = ArtifactTypeInfo('Plume of Death', [MainStat(*s) for s in plume_main], [SubStat(*s) for s in sub])
-    SANDS = ArtifactTypeInfo('Sands of Eon', [MainStat(*s) for s in sands_main], [SubStat(*s) for s in sub])
-    GOBLET = ArtifactTypeInfo('Goblet of Eonothem', [MainStat(*s) for s in goblet_main], [SubStat(*s) for s in sub])
-    CIRCLET = ArtifactTypeInfo('Circlet of Logos', [MainStat(*s) for s in circlet_main], [SubStat(*s) for s in sub])
-
-
 @dataclass
 class Artifact:
     name: str
@@ -120,13 +128,14 @@ class Artifact:
     rarity: int
     main_stat: MainStat
     sub_stats: list[SubStat]
+    set: Set
     level: int = 0
 
     def __post_init__(self):
-        self.type.value.delete_sub_stat(self.main_stat.name)
+        self.type.delete_sub_stat(self.main_stat.name)
 
     def upgrade(self):
-        if self.level < 20:
+        if self.level < self.rarity * 4:
             self.level += 1
             self.main_stat.upgrade()
             if self.level % 4 == 0:
@@ -136,12 +145,12 @@ class Artifact:
 
     def __upgrade_sub_stats(self):
         if len(self.sub_stats) < 4:
-            self.sub_stats.append(self.type.value.get_random_sub_stats(1)[0])
+            self.sub_stats.append(self.type.get_random_sub_stats(1)[0])
         else:
             random.choice(self.sub_stats).upgrade()
 
     def print(self):
-        print(f'\n{self.name} ({self.type.value.name})')
+        print(f'\n{self.name} ({self.type.name})')
 
         self.main_stat.print()
 
@@ -151,3 +160,6 @@ class Artifact:
         print('--------------------------')
         for stat in self.sub_stats:
             stat.print()
+
+    def print_short(self):
+        print(f'{self.rarity}★ {self.name}')
