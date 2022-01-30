@@ -11,10 +11,11 @@ class Set:
     rarities: list[int]
     obtain_locations: dict[int, list[str]]
 
-    def print_info(self):
-        print(f'{self.name}:')
+    def bonuses_to_string(self):
+        set_info = f'{self.name}:'
         for piece in self.bonuses:
-            print(f'⊘ {piece}: {self.bonuses[piece]}')
+            set_info += f'\n⊘ {piece}: {self.bonuses[piece]}'
+        return set_info
 
 
 @dataclass
@@ -51,13 +52,12 @@ class MainStat:
     def upgrade(self):
         self.level += 1
 
-    def print(self):
+    def to_string(self):
         if '%' in self.name:
-            print(self.name[:-4])
-            print(f'{round(self.value, 1)}%')
+            main_stat = f'{self.name[:-4]}\n{round(self.value, 1)}%'
         else:
-            print(self.name)
-            print(round(self.value))
+            main_stat = f'{self.name}\n{round(self.value)}'
+        return main_stat
 
 
 @dataclass
@@ -77,11 +77,12 @@ class SubStat:
     def upgrade(self):
         self.proc_history.append(random.choice(self.possible_values))
 
-    def print(self):
+    def to_string(self):
         if '%' in self.name:
-            print(f'{self.name[:-4]}+{round(self.value, 1)}%')
+            sub_stat = f'{self.name[:-4]}+{round(self.value, 1)}%'
         else:
-            print(f'{self.name}+{round(self.value)}')
+            sub_stat = f'{self.name}+{round(self.value)}'
+        return sub_stat
 
 
 @dataclass
@@ -130,6 +131,7 @@ class Artifact:
     sub_stats: list[SubStat]
     set: Set
     level: int = 0
+    image_url: str = None
 
     def __post_init__(self):
         self.type.delete_sub_stat(self.main_stat.name)
@@ -140,8 +142,6 @@ class Artifact:
             self.main_stat.upgrade()
             if self.level % 4 == 0:
                 self.__upgrade_sub_stats()
-        else:
-            print('Max Level Reached')
 
     def __upgrade_sub_stats(self):
         if len(self.sub_stats) < 4:
@@ -149,17 +149,14 @@ class Artifact:
         else:
             random.choice(self.sub_stats).upgrade()
 
-    def print(self):
-        print(f'\n{self.name} ({self.type.name})')
-
-        self.main_stat.print()
-
-        for _ in range(self.rarity):
-            print('★', end='')
-        print(f'     [+{self.level}]')
-        print('--------------------------')
+    def to_string(self):
+        artifact = f'{self.name} ({self.type.name})\n' \
+                   f'{self.main_stat.to_string()}\n' \
+                   f'{"★" * self.rarity}     [+{self.level}]\n' \
+                   f'--------------------------'
         for stat in self.sub_stats:
-            stat.print()
+            artifact += f'\n{stat.to_string()}'
+        return artifact
 
-    def print_short(self):
-        print(f'{self.rarity}★ {self.name}')
+    def to_string_short(self):
+        return f'{self.rarity}★ {self.name}'

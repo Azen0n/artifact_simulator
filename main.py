@@ -27,8 +27,7 @@ def get_validated_answer(commands: str = ''):
 
 def print_artifact_list(artifacts: list[Artifact]):
     for i, artifact in enumerate(artifacts):
-        print(f'{i + 1}. ', end='')
-        artifact.print_short()
+        print(f'{i + 1}. {artifact.to_string_short()}')
 
 
 def main():
@@ -44,27 +43,25 @@ def main():
 
         if answer in range(1, len(artifacts) + 1):
             artifact_index = answer - 1
-            artifacts[artifact_index].print()
+            print(artifacts[artifact_index].to_string())
 
             answer = get_validated_answer(artifact_info_commands)
 
             while answer == 2:
-                artifacts[artifact_index].set.print_info()
+                print(artifacts[artifact_index].set.bonuses_to_string())
                 answer = get_validated_answer(artifact_info_commands)
 
             while answer == 1:
                 artifacts[artifact_index].upgrade()
-                artifacts[artifact_index].print()
+                print(artifacts[artifact_index].to_string())
                 answer = get_validated_answer(artifact_info_commands)
 
                 while answer == 2:
-                    artifacts[artifact_index].set.print_info()
+                    print(artifacts[artifact_index].set.bonuses_to_string())
                     answer = get_validated_answer(artifact_info_commands)
 
             print()
-            for i, artifact in enumerate(artifacts):
-                print(f'{i + 1}. ', end='')
-                artifact.print_short()
+            print_artifact_list(artifacts)
 
         elif answer == 0:
             artifacts = generator.grand_roll(domain_name)
