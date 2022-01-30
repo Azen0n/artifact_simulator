@@ -35,7 +35,7 @@ class Client(discord.Client):
     async def on_message(self, message: discord.Message):
         if message.author == self.user:
             return
-        if message.content.startswith('-start'):
+        if message.content.startswith('<@!936983390601773077>'):
             if self.message is not None:
                 await self.__close_message(message.author)
             await self.__send_initial_message(message)
@@ -52,6 +52,10 @@ class Client(discord.Client):
                 await self.__on_page_artifact_list(reaction)
             elif self.current_page == Page.ARTIFACT:
                 await self.__on_page_artifact(reaction)
+
+    async def on_message_delete(self, message: discord.Message):
+        if message == self.message:
+            self.message = None
 
     async def __send_initial_message(self, start_message: discord.Message):
         self.current_user = start_message.author
