@@ -52,12 +52,15 @@ class MainStat:
     def upgrade(self):
         self.level += 1
 
-    def to_string(self):
+    def __str__(self):
         if '%' in self.name:
             main_stat = f'{self.name[:-4]}\n{round(self.value, 1)}%'
         else:
             main_stat = f'{self.name}\n{round(self.value)}'
         return main_stat
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(name={self.name}, min={self.min}, max={self.max}, probability={self.probability}, level={self.level})'
 
 
 @dataclass
@@ -77,12 +80,15 @@ class SubStat:
     def upgrade(self):
         self.proc_history.append(random.choice(self.possible_values))
 
-    def to_string(self):
+    def __str__(self):
         if '%' in self.name:
             sub_stat = f'{self.name[:-4]}+{round(self.value, 1)}%'
         else:
             sub_stat = f'{self.name}+{round(self.value)}'
         return sub_stat
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(name={self.name}, possible_values={self.possible_values}, probability={self.probability}, proc_history={self.proc_history})'
 
 
 @dataclass
@@ -149,14 +155,17 @@ class Artifact:
         else:
             random.choice(self.sub_stats).upgrade()
 
-    def to_string(self):
+    def __str__(self):
         artifact = f'{self.name} ({self.type.name})\n' \
-                   f'{self.main_stat.to_string()}\n' \
+                   f'{self.main_stat}\n' \
                    f'{"★" * self.rarity}     [+{self.level}]\n' \
                    f'--------------------------'
         for stat in self.sub_stats:
-            artifact += f'\n{stat.to_string()}'
+            artifact += f'\n{stat}'
         return artifact
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(name={self.name}, type={self.type.name}, rarity={self.rarity}, main_stat={self.main_stat}, sub_stats={self.sub_stats}, level={self.level})'
 
     def to_string_short(self):
         return f'{self.rarity}★ {self.name}'

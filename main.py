@@ -43,7 +43,7 @@ def main():
 
         if answer in range(1, len(artifacts) + 1):
             artifact_index = answer - 1
-            print(artifacts[artifact_index].to_string())
+            print(artifacts[artifact_index])
 
             answer = get_validated_answer(artifact_info_commands)
 
@@ -53,7 +53,7 @@ def main():
 
             while answer == 1:
                 artifacts[artifact_index].upgrade()
-                print(artifacts[artifact_index].to_string())
+                print(artifacts[artifact_index])
                 answer = get_validated_answer(artifact_info_commands)
 
                 while answer == 2:

@@ -154,11 +154,11 @@ class Client(discord.Client):
 
     def __artifact_to_string_for_embed(self):
         artifact_name = f'{self.current_artifact.name} ({self.current_artifact.type.name})'
-        sub_stats = ''.join(f"{stat.to_string()}\n" for stat in self.current_artifact.sub_stats)
+        sub_stats = ''.join(f"{stat}\n" for stat in self.current_artifact.sub_stats)
         artifact_info = ''.join(
-            f'{self.current_artifact.main_stat.to_string()}\n'
+            f'{self.current_artifact.main_stat}\n'
             f'{"★" * self.current_artifact.rarity}\n'
-            f'────────────────────────────────\n'
+            f'─────────────────────────\n'
             f'[+{self.current_artifact.level}]\n'
             f'{sub_stats}'
         )
