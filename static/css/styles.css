@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
+
+/* colors */
+
+:root {
+    --sim-bg-color: #001829;
+    --sim-container-color: #00253D;
+    --sim-dark-blue-color: #003D66;
+    --sim-light-blue-color: #00497A;
+    --sim-epic-dark-color: #5D517E;
+    --sim-epic-mid-color: #6E5685;
+    --sim-epic-light-color: #A570A8;
+    --sim-white: #E9E5DC;
+}
+
+.sim-bg {
+    background-color: var(--sim-bg-color) !important;
+}
+
+.sim-bg-container {
+    background-color: var(--sim-container-color) !important;
+}
+
+.sim-dark-blue {
+    color: var(--sim-dark-blue-color) !important;
+}
+
+.sim-light-blue {
+    color: var(--sim-light-blue-color) !important;
+}
+
+.sim-white {
+    color: var(--sim-white) !important;
+}
+
+/* basic tags */
+
+html {
+    height: 100vh;
+}
+
+body {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+
+/* custom tags */
+
+.artifact-grid {
+    display: grid;
+    column-gap: 1em;
+    justify-items: center;
+    grid-template-columns: repeat(8, 1fr);
+}
+
+@media (max-width: 1800px) {
+    .artifact-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (max-width: 1600px) {
+    .artifact-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (max-width: 1400px) {
+    .artifact-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .artifact-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .artifact-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .artifact-card-rarity {
+        margin: -10% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .artifact-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .artifact-card-image {
+        margin: 2% !important;
+    }
+
+    .artifact-card-rarity {
+        margin: -18% !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .artifact-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .artifact-card-rarity {
+        margin: -70% !important;
+    }
+
+    .artifact-card-level {
+        margin: -18% !important;
+    }
+}
+
+.artifact-card-container {
+    display: grid;
+    text-align: center;
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+}
+
+.artifact-card {
+    grid-row: 1 / 5;
+    grid-column: 1 / 5;
+}
+
+.artifact-card-image {
+    grid-row: 1 / 5;
+    grid-column: 1 / 5;
+}
+
+.artifact-card-rarity {
+    margin: -5%;
+    grid-row: 3 / 4;
+    grid-column: 2 / 4;
+}
+
+.artifact-card-level {
+    grid-row: 4 / 5;
+    grid-column: 1 / 5;
+}
+
+.sim-button {
+    background-color: var(--sim-bg-color);
+    color: var(--sim-white);
+    border: 0.125em solid var(--sim-white);
+    padding: 0.75em 2em 0.75em 2em;
+    border-radius: 2em;
+    transition: all 0.2s;
+}
+
+.sim-button:hover {
+    background-color: var(--sim-white);
+    color: var(--sim-bg-color);
+}
+
+.sim-button:active {
+    opacity: 75%;
+}
